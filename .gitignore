@@ -9,3 +9,6 @@
 
 # ignore build directory
 build
+
+# ignore DS_Store
+*.DS_Store
