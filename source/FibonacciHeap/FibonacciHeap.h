@@ -10,16 +10,48 @@ struct FNode : public INode<V>
 public:
     friend class FibonacciHeap<V>;
 
-    FNode<V>* getParent() { return parent; }
-    FNode<V>* getLeft() { return left; }
-    FNode<V>* getRight() { return right; }
-    FNode<V>* getChild() { return child; }
-    V getValue() { return value; }
-    int getRank() { return rank; }
+    FNode<V>* getParent() 
+    { 
+        return parent; 
+    }
 
-    bool isMarked() { return marked; }
-    bool hasChildren() override { return child; }
-    bool hasParents() override { return parent; }
+    FNode<V>* getLeft() 
+    { 
+        return left; 
+    }
+
+    FNode<V>* getRight() 
+    { 
+        return right; 
+    }
+    FNode<V>* getChild() 
+    { 
+        return child; 
+    }
+    V getValue() 
+    { 
+        return value; 
+    }
+
+    int getRank() 
+    { 
+        return rank; 
+    }
+
+    bool isMarked() 
+    { 
+        return marked; 
+    }
+
+    bool hasChildren() override 
+    { 
+        return child; 
+    }
+
+    bool hasParents() override 
+    { 
+        return parent; 
+    }
 
 private:
     FNode* parent;

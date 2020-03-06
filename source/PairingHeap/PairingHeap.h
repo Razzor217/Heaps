@@ -10,15 +10,40 @@ struct PNode : public INode<V>
 public:
     friend class PairingHeap<V>;
 
-    PNode<V>* getParent() { return parent; }
-    PNode<V>* getLeft() { return left; }
-    PNode<V>* getRight() { return right; }
-    PNode<V>* getChild() { return child; }
+    PNode<V>* getParent() 
+    { 
+        return parent; 
+    }
 
-    V getValue() { return value; }
+    PNode<V>* getLeft() 
+    { 
+        return left; 
+    }
 
-    bool hasChildren() override { return child; }
-    bool hasParents() override { return parent; }
+    PNode<V>* getRight() 
+    { 
+        return right; 
+    }
+
+    PNode<V>* getChild() 
+    { 
+        return child; 
+    }
+
+    V getValue() 
+    { 
+        return value; 
+    }
+
+    bool hasChildren() override 
+    { 
+        return child; 
+    }
+
+    bool hasParents() override 
+    { 
+        return parent; 
+    }
 
 private:
     PNode<V>* parent;
