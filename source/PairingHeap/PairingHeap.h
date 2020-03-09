@@ -100,7 +100,11 @@ public:
         return minPtr->getValue();
     }
 
-    V deleteMin() override;
+    V deleteMin() override
+    {
+        V value = minPtr->getValue();
+        
+    }
 
     V remove(INode<V>* handle) override;
 
@@ -116,6 +120,12 @@ private:
     PNode<V>* _singleton(V element);
 
     void _newTree(PNode<V>* handle);
+
+    void _cut(PNode<V>* handle);
+
+    void _link(PNode<V>* a, PNode<V>* b);
+
+    void _union(PNode<V>* a, PNode<V>* b);
 };
 
 #include "PairingHeap.hpp"
