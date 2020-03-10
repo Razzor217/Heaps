@@ -100,6 +100,8 @@ public:
         Node<V, K>* node = _singleton(element, key);
         _newTree(node);
 
+        ++count;
+
         return node;
     }
 
@@ -113,6 +115,8 @@ public:
         V value = minPtr->getValue();
 
         _deleteMin();
+
+        count = (count > 0) ? count-- : 0;
 
         return value;
     }
