@@ -5,27 +5,27 @@
 template<class V, class K> class PairingHeap;
 
 template<class V, class K> 
-struct PNode : public INode<V, K> 
+struct Node : public INode<V, K> 
 {
 public:
     friend class PairingHeap<V, K>;
 
-    PNode<V, K>* getParent() 
+    Node<V, K>* getParent() 
     { 
         return parent; 
     }
 
-    PNode<V, K>* getLeft() 
+    Node<V, K>* getLeft() 
     { 
         return left; 
     }
 
-    PNode<V, K>* getRight() 
+    Node<V, K>* getRight() 
     { 
         return right; 
     }
 
-    PNode<V, K>* getChild() 
+    Node<V, K>* getChild() 
     { 
         return child; 
     }
@@ -51,10 +51,10 @@ public:
     }
 
 private:
-    PNode<V, K>* parent;
-    PNode<V, K>* left;
-    PNode<V, K>* right;
-    PNode<V, K>* child;
+    Node<V, K>* parent;
+    Node<V, K>* left;
+    Node<V, K>* right;
+    Node<V, K>* child;
 
     V value;
     K key;
@@ -64,8 +64,8 @@ template<class V, class K>
 class PairingHeap : public IHeap<V, K>
 {
 private:
-    PNode<V, K>* forest;
-    PNode<V, K>* minPtr;
+    Node<V, K>* forest;
+    Node<V, K>* minPtr;
     int count;
 
 public:
@@ -97,7 +97,7 @@ public:
 
     INode<V, K>* insert(V element, K key) override
     {
-        PNode<V, K>* node = _singleton(element, key);
+        Node<V, K>* node = _singleton(element, key);
         _newTree(node);
 
         return node;
@@ -143,12 +143,12 @@ public:
         other->getForest() = NULL;
     }
 
-    PNode<V, K>* getForest()
+    Node<V, K>* getForest()
     {
         return forest;
     }
 
-    PNode<V, K>* getMinPtr()
+    Node<V, K>* getMinPtr()
     {
         return minPtr;
     }
@@ -156,23 +156,23 @@ public:
 private:
     void _init();
 
-    void _deleteAll(PNode<V, K>* handle);
+    void _deleteAll(Node<V, K>* handle);
 
-    PNode<V, K>* _singleton(V element, K key);
+    Node<V, K>* _singleton(V element, K key);
 
-    void _newTree(PNode<V, K>* handle);
+    void _newTree(Node<V, K>* handle);
 
-    void _cut(PNode<V, K>* handle);
+    void _cut(Node<V, K>* handle);
 
-    void _link(PNode<V, K>* a, PNode<V, K>* b);
+    void _link(Node<V, K>* a, Node<V, K>* b);
 
-    void _union(PNode<V, K>* a, PNode<V, K>* b);
+    void _union(Node<V, K>* a, Node<V, K>* b);
 
     void _deleteMin();
 
-    void _decreaseKey(PNode<V, K>* handle, K key);
+    void _decreaseKey(Node<V, K>* handle, K key);
 
-    void _insertForest(PNode<V, K>* other);
+    void _insertForest(Node<V, K>* other);
 };
 
 #include "PairingHeap.hpp"
