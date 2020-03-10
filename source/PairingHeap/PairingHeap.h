@@ -99,6 +99,8 @@ public:
     {
         PNode<V, K>* node = _singleton(element, key);
         _newTree(node);
+
+        return node;
     }
 
     V min() override
