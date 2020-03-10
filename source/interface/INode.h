@@ -1,6 +1,6 @@
 #pragma once
 
-template<class V> struct INode
+template<class V, class K> struct INode
 {
 public: 
     virtual bool hasChildren() = 0;

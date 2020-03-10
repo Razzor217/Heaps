@@ -2,35 +2,41 @@
 
 #include "../interface/IHeap.h"
 
-template<class V> class FibonacciHeap;
+template<class V, class K> class FibonacciHeap;
 
-template<class V> 
-struct FNode : public INode<V> 
+template<class V, class K> 
+struct FNode : public INode<V, K> 
 {
 public:
-    friend class FibonacciHeap<V>;
+    friend class FibonacciHeap<V, K>;
 
-    FNode<V>* getParent() 
+    FNode<V, K>* getParent() 
     { 
         return parent; 
     }
 
-    FNode<V>* getLeft() 
+    FNode<V, K>* getLeft() 
     { 
         return left; 
     }
 
-    FNode<V>* getRight() 
+    FNode<V, K>* getRight() 
     { 
         return right; 
     }
-    FNode<V>* getChild() 
+    FNode<V, K>* getChild() 
     { 
         return child; 
     }
+
     V getValue() 
     { 
         return value; 
+    }
+
+    K getKey()
+    {
+        return key;
     }
 
     int getRank() 
@@ -58,13 +64,16 @@ private:
     FNode* left;
     FNode* right;
     FNode* child;
+
     V value;
+    K key;
+
     int rank;
     bool marked;
 };
 
-template<class V> 
-class FibonacciHeap : public IHeap<V>
+template<class V, class K> 
+class FibonacciHeap : public IHeap<V, K>
 {
     FibonacciHeap()
     {
@@ -79,24 +88,24 @@ class FibonacciHeap : public IHeap<V>
         }
     }
 
-    void build(std::vector<V> elements) override;
+    void build(std::vector<V, K> elements) override;
 
     int size() override;
 
-    INode<V>* insert(V element) override;
+    INode<V, K>* insert(V element) override;
 
     V min() override;
 
     V deleteMin() override;
 
-    V remove(INode<V>* handle) override;
+    V remove(INode<V, K>* handle) override;
 
-    void decreaseKey(INode<V>* handle, V key) override;
+    void decreaseKey(INode<V, K>* handle, V key) override;
 
-    void merge(IHeap<V>* other) override;
+    void merge(IHeap<V, K>* other) override;
 
 private:
-    FNode<V>* forest;
-    FNode<V>* minPtr;
+    FNode<V, K>* forest;
+    FNode<V, K>* minPtr;
     int count;
 };

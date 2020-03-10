@@ -1,20 +1,20 @@
-template<class V>
-void PairingHeap<V>::_init()
+template<class V, class K>
+void PairingHeap<V, K>::_init()
 {
     forest = NULL;
     minPtr = NULL;
     count = 0;
 }
 
-template<class V>
-void PairingHeap<V>::_deleteAll(PNode<V>* handle)
+template<class V, class K>
+void PairingHeap<V, K>::_deleteAll(PNode<V, K>* handle)
 {
     if (handle)
     {
-        PNode<V>* current = handle;
+        PNode<V, K>* current = handle;
         do 
         {
-            PNode<V>* node = current;
+            PNode<V, K>* node = current;
             current = current->right;
             _deleteAll(node->child);
             delete node;
@@ -23,10 +23,10 @@ void PairingHeap<V>::_deleteAll(PNode<V>* handle)
     }
 }
 
-template<class V>
-PNode<V>* PairingHeap<V>::_singleton(V element)
+template<class V, class K>
+PNode<V, K>* PairingHeap<V, K>::_singleton(V element, K key)
 {
-    PNode<V>* node = new PNode<V>;
+    PNode<V, K>* node = new PNode<V, K>;
 
     node->parent = NULL;
     node->left = node;
@@ -34,14 +34,15 @@ PNode<V>* PairingHeap<V>::_singleton(V element)
     node->child = NULL;
 
     node->value = element;
+    node->key = key;
 
     return node;
 }
 
-template<class V>
-void PairingHeap<V>::_newTree(PNode<V>* handle)
+template<class V, class K>
+void PairingHeap<V, K>::_newTree(PNode<V, K>* handle)
 {
-    PNode<V>* end = forest->left;
+    PNode<V, K>* end = forest->left;
     forest->left = handle;
     handle->left = end;
     handle->right = forest;
@@ -53,8 +54,8 @@ void PairingHeap<V>::_newTree(PNode<V>* handle)
     }
 }
 
-template<class V>
-void PairingHeap<V>::_cut(PNode<V>* handle)
+template<class V, class K>
+void PairingHeap<V, K>::_cut(PNode<V, K>* handle)
 {
     // remove subtree rooted at handle
     handle->right->left = handle->left;
@@ -67,8 +68,8 @@ void PairingHeap<V>::_cut(PNode<V>* handle)
     _newTree(handle);
 }
 
-template<class V>
-void PairingHeap<V>::_link(PNode<V>* a, PNode<V>* b)
+template<class V, class K>
+void PairingHeap<V, K>::_link(PNode<V, K>* a, PNode<V, K>* b)
 {
     if (a->hasChildren())
     {
@@ -88,8 +89,8 @@ void PairingHeap<V>::_link(PNode<V>* a, PNode<V>* b)
     }
 }
 
-template<class V>
-void PairingHeap<V>::_union(PNode<V>* a, PNode<V>* b)
+template<class V, class K>
+void PairingHeap<V, K>::_union(PNode<V, K>* a, PNode<V, K>* b)
 {
     if (a->value < b->value)
     {
@@ -99,4 +100,37 @@ void PairingHeap<V>::_union(PNode<V>* a, PNode<V>* b)
     {
         _link(b, a);
     }
+}
+
+template<class V, class K>
+void PairingHeap<V, K>::_decreaseKey(PNode<V, K>* handle, K key)
+{
+    handle->key = key;
+
+    /*
+     * cut subtree rooted at handle if handle is not a root
+     * otherwise update minPtr
+     */
+    if (handle->parent)
+    {
+        _cut(handle);
+    }
+    else
+    {
+        if (key < minPtr->key)
+        {
+            minPtr = handle;
+        }
+    }
+}
+
+template<class V, class K>
+void PairingHeap<V, K>::_insertForest(PNode<V, K>* other)
+{
+    // insert other forest into heap
+    PNode<V, K>* end = forest->left;
+    forest->left = other->left;
+    other->left->right = forest;
+    other->left = end;
+    end->right = other;
 }
