@@ -71,6 +71,10 @@ void PairingHeap<V, K>::_cut(PNode<V, K>* handle)
 template<class V, class K>
 void PairingHeap<V, K>::_link(PNode<V, K>* a, PNode<V, K>* b)
 {
+
+    b->left->right = b->right;
+    b->right->left = b->left;
+
     if (a->hasChildren())
     {
         // insert b as child at end of children
@@ -85,6 +89,9 @@ void PairingHeap<V, K>::_link(PNode<V, K>* a, PNode<V, K>* b)
     else
     {
         a->child = b;
+        b->left = b;
+        b->right = b;
+
         b->parent = a;
     }
 }
@@ -92,6 +99,9 @@ void PairingHeap<V, K>::_link(PNode<V, K>* a, PNode<V, K>* b)
 template<class V, class K>
 void PairingHeap<V, K>::_union(PNode<V, K>* a, PNode<V, K>* b)
 {
+    assert(!a->parent);
+    assert(!b->parent);
+
     if (a->value < b->value)
     {
         _link(a, b);
@@ -100,6 +110,59 @@ void PairingHeap<V, K>::_union(PNode<V, K>* a, PNode<V, K>* b)
     {
         _link(b, a);
     }
+}
+
+template<class V, class K>
+void PairingHeap<V, K>::_deleteMin()
+{
+    auto handle = minPtr;
+
+    // connect siblings
+    if (handle->left == handle || handle->right == handle)
+    {
+        handle->left = NULL;
+        handle->right = NULL;
+    }
+    else
+    {
+        handle->left->right = handle->right;
+        handle->right->left = handle->left;
+    }
+
+    // connect parent to next child
+    if (handle->parent)
+    {
+        handle->parent->child = handle->right;
+        handle->parent = NULL;
+    }
+
+    // add children as new trees
+    if (handle->child)
+    {
+        auto current = handle->child;
+        do
+        {
+            auto node = current;
+            current = current->right;
+
+            _newTree(node);
+        }
+        while (current != handle->child);
+    }
+
+    delete handle;
+
+    // perform pair-wise union operations on roots
+    auto current = forest->right;
+    do
+    {
+        auto node = current;
+        current = current->right->right;
+
+        _union(node, node->right);
+    }
+    while (current != forest && current != forest->right);
+
 }
 
 template<class V, class K>

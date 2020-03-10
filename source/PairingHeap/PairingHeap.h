@@ -111,10 +111,18 @@ public:
     V deleteMin() override
     {
         V value = minPtr->getValue();
-        
+
+        _deleteMin();
+
+        return value;
     }
 
-    V remove(INode<V, K>* handle) override;
+    V remove(INode<V, K>* handle) override
+    {
+        decreaseKey(handle, minPtr->getKey() - 1);
+
+        deleteMin();
+    }
 
     void decreaseKey(INode<V, K>* handle, K key) override
     {
@@ -124,12 +132,13 @@ public:
         }
     }
 
-    void merge(IHeap<V, K>* other) override
+    void merge(PairingHeap<V, K>* other) override
     {
         if (other->getMinPtr()->getKey() < minPtr->getKey())
         {
             minPtr = other->getMinPtr();
         }
+
         _insertForest(other->getForest());
         other->getForest() = NULL;
     }
@@ -158,6 +167,8 @@ private:
     void _link(PNode<V, K>* a, PNode<V, K>* b);
 
     void _union(PNode<V, K>* a, PNode<V, K>* b);
+
+    void _deleteMin();
 
     void _decreaseKey(PNode<V, K>* handle, K key);
 
