@@ -151,7 +151,7 @@ void FibonacciHeap<V, K>::_unionByRank()
 }
 
 template<class V, class K>
-FNode<V, K>* FibonacciHeap<V, K>::_insertByRank(
+void FibonacciHeap<V, K>::_insertByRank(
     std::vector<FNode<V, K>*>& ranks, FNode<V, K>* handle)
 {
     /*
@@ -169,7 +169,7 @@ FNode<V, K>* FibonacciHeap<V, K>::_insertByRank(
         }
         else
         {
-            _link(collision, link);
+            _link(collision, handle);
             _insertByRank(collision);
         }
     }
@@ -225,14 +225,14 @@ void FibonacciHeap<V, K>::_decreaseKey(FNode<V, K>* handle, K key)
 {
     handle->key = key;
 
-    _cascadingCut(handle)
+    _cascadingCut(handle);
 }
 
 template<class V, class K>
 void FibonacciHeap<V, K>::_insertForest(FNode<V, K>* other)
 {
     // insert other forest into heap
-    Node<V, K>* end = forest->left;
+    FNode<V, K>* end = forest->left;
     forest->left = other->left;
     other->left->right = forest;
     other->left = end;

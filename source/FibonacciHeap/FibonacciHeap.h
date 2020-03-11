@@ -171,7 +171,7 @@ public:
 private:
     void _init();
 
-    void _deleteAll();
+    void _deleteAll(FNode<V, K>* handle);
 
     FNode<V, K>* _singleton(V element, K key);
 
@@ -193,3 +193,5 @@ private:
 
     void _insertForest(FNode<V, K>* other);
 };
+
+#include "FibonacciHeap.hpp"
