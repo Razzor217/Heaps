@@ -1,5 +1,5 @@
 template<class V, class K>
-void PairingHeap<V, K>::_init()
+void FibonacciHeap<V, K>::_init()
 {
     forest = NULL;
     minPtr = NULL;
@@ -7,14 +7,14 @@ void PairingHeap<V, K>::_init()
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_deleteAll(Node<V, K>* handle)
+void FibonacciHeap<V, K>::_deleteAll(FNode<V, K>* handle)
 {
     if (handle)
     {
-        Node<V, K>* current = handle;
+        FNode<V, K>* current = handle;
         do 
         {
-            Node<V, K>* node = current;
+            FNode<V, K>* node = current;
             current = current->right;
             _deleteAll(node->child);
             delete node;
@@ -24,9 +24,9 @@ void PairingHeap<V, K>::_deleteAll(Node<V, K>* handle)
 }
 
 template<class V, class K>
-Node<V, K>* PairingHeap<V, K>::_singleton(V element, K key)
+FNode<V, K>* FibonacciHeap<V, K>::_singleton(V element, K key)
 {
-    Node<V, K>* node = new Node<V, K>;
+    FNode<V, K>* node = new FNode<V, K>;
 
     node->parent = NULL;
     node->left = node;
@@ -36,13 +36,16 @@ Node<V, K>* PairingHeap<V, K>::_singleton(V element, K key)
     node->value = element;
     node->key = key;
 
+    node->rank = 0;
+    node->marked = false;
+
     return node;
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_newTree(Node<V, K>* handle)
+void FibonacciHeap<V, K>::_newTree(FNode<V, K>* handle)
 {
-    Node<V, K>* end = forest->left;
+    FNode<V, K>* end = forest->left;
     forest->left = handle;
     handle->left = end;
     handle->right = forest;
@@ -55,7 +58,7 @@ void PairingHeap<V, K>::_newTree(Node<V, K>* handle)
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_cut(Node<V, K>* handle)
+void FibonacciHeap<V, K>::_cut(FNode<V, K>* handle)
 {
     // advance child pointer of parent
     if (handle->parent->child == handle)
@@ -76,7 +79,7 @@ void PairingHeap<V, K>::_cut(Node<V, K>* handle)
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_link(Node<V, K>* a, Node<V, K>* b)
+void FibonacciHeap<V, K>::_link(FNode<V, K>* a, FNode<V, K>* b)
 {
     b->left->right = b->right;
     b->right->left = b->left;
@@ -96,26 +99,88 @@ void PairingHeap<V, K>::_link(Node<V, K>* a, Node<V, K>* b)
         b->left = b;
         b->right = b;
     }
+
+    b->parent = a;
+
+    // increment rank of surviving root
+    (a->rank)++;
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_union(Node<V, K>* a, Node<V, K>* b)
+void FibonacciHeap<V, K>::_cascadingCut(FNode<V, K>* handle)
 {
-    assert(!a->parent);
-    assert(!b->parent);
-
-    if (a->key < b->key)
+    // cut if handle is not a root
+    if (handle->parent)
     {
-        _link(a, b);
+        FNode<V, K>* parent = handle-> parent;
+        handle->marked = false;
+
+        _cut(handle);
+
+        // cascading cuts
+        if (parent->marked)
+        {
+            _cascadingCut(parent);
+        }
+        else
+        {
+            parent->marked = true;
+        }
+    }
+    else 
+    {
+        // update min pointer
+        if (handle->key < minPtr->key)
+        {
+            minPtr = handle;
+        }
+    }
+}
+
+template<class V, class K>
+void FibonacciHeap<V, K>::_unionByRank()
+{
+    std::vector<FNode<V, K>> ranks(count, NULL);
+
+    FNode<V, K>* it = forest;
+    do
+    {
+        _insertByRank(ranks, it);
+    }
+    while (it != forest);
+}
+
+template<class V, class K>
+FNode<V, K>* FibonacciHeap<V, K>::_insertByRank(
+    std::vector<FNode<V, K>*>& ranks, FNode<V, K>* handle)
+{
+    /*
+     * if there is a collision, 
+     *  1. link nodes with same rank
+     *  2. insert surviving root recursively
+     */
+    FNode<V, K>* collision = ranks[handle->rank];
+    if (collision)
+    {
+        if (handle->key < collision->key)
+        {
+            _link(handle, collision);
+            _insertByRank(handle);
+        }
+        else
+        {
+            _link(collision, link);
+            _insertByRank(collision);
+        }
     }
     else
     {
-        _link(b, a);
+         ranks[handle->rank] = handle;
     }
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_deleteMin()
+void FibonacciHeap<V, K>::_deleteMin()
 {
     auto handle = minPtr;
 
@@ -152,45 +217,19 @@ void PairingHeap<V, K>::_deleteMin()
         while (current != handle->child);
     }
 
-    delete handle;
-
-    // perform pair-wise union operations on roots
-    auto current = forest->right;
-    do
-    {
-        auto node = current;
-        current = current->right->right;
-
-        _union(node, node->right);
-    }
-    while (current != forest && current != forest->right);
-
+    _unionByRank();
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_decreaseKey(Node<V, K>* handle, K key)
+void FibonacciHeap<V, K>::_decreaseKey(FNode<V, K>* handle, K key)
 {
     handle->key = key;
 
-    /*
-     * cut subtree rooted at handle if handle is not a root
-     * otherwise update minPtr
-     */
-    if (handle->parent)
-    {
-        _cut(handle);
-    }
-    else
-    {
-        if (key < minPtr->key)
-        {
-            minPtr = handle;
-        }
-    }
+    _cascadingCut(handle)
 }
 
 template<class V, class K>
-void PairingHeap<V, K>::_insertForest(Node<V, K>* other)
+void FibonacciHeap<V, K>::_insertForest(FNode<V, K>* other)
 {
     // insert other forest into heap
     Node<V, K>* end = forest->left;

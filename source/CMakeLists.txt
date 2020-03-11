@@ -7,6 +7,7 @@ set(HEADERS
     ./Interface/INode.h
 
     ./FibonacciHeap/FibonacciHeap.h
+    ./FibonacciHeap/FibonacciHeap.hpp
     ./PairingHeap/PairingHeap.h
     ./PairingHeap/PairingHeap.hpp
 )

@@ -75,37 +75,121 @@ private:
 template<class V, class K> 
 class FibonacciHeap : public IHeap<V, K>
 {
+private:
+    FNode<V, K>* forest;
+    FNode<V, K>* minPtr;
+    int count;
+
+public:
     FibonacciHeap()
     {
-
+        _init();
     }
 
     virtual ~FibonacciHeap()
     {
         if (forest)
         {
-
+            _deleteAll(forest);
         }
     }
 
-    void build(std::vector<V, K> elements) override;
+    void build(std::vector<V>& elements, std::vector<K>& keys) override
+    {
+        assert(elements.size() == keys.size());
 
-    int size() override;
+        for (int i = 0; i < elements.size(); ++i)
+        {
+            insert(elements[i], keys[i]);
+        }
 
-    INode<V, K>* insert(V element) override;
+        ++count;
+    }
 
-    V min() override;
+    int size() override
+    {
+        return count;
+    }
 
-    V deleteMin() override;
+    INode<V, K>* insert(V element, K key) override
+    {
+        FNode<V, K>* handle = _singleton(element);
+    }
 
-    V remove(INode<V, K>* handle) override;
+    V min() override
+    {
+        return minPtr->getValue();
+    }
 
-    void decreaseKey(INode<V, K>* handle, V key) override;
+    V deleteMin() override
+    {
+        V value = minPtr->getValue();
 
-    void merge(IHeap<V, K>* other) override;
+        _deleteMin();
+
+        count = (count > 0) ? count-- : 0;
+
+        return value;
+    }
+
+    V remove(INode<V, K>* handle) override
+    {
+        decreaseKey(handle, minPtr->getKey() - 1);
+
+        deleteMin();
+    }
+
+    void decreaseKey(INode<V, K>* handle, V key) override
+    {
+        if (key < handle->getKey())
+        {
+            _decreaseKey(handle, key);
+        }
+    }
+
+    void merge(IHeap<V, K>* other) override
+    {
+        if (other->getMinPtr()->getKey() < minPtr->getKey())
+        {
+            minPtr = other->getMinPtr();
+        }
+
+        _insertForest(other->getForest());
+        other->getForest() = NULL;
+    }
+
+    FNode<V, K>* getForest()
+    {
+        return forest;
+    }
+
+    FNode<V, K>* getMinPtr()
+    {
+        return minPtr;
+    }
 
 private:
-    FNode<V, K>* forest;
-    FNode<V, K>* minPtr;
-    int count;
+    void _init();
+
+    void _deleteAll();
+
+    FNode<V, K>* _singleton(V element, K key);
+
+    void _newTree(FNode<V, K>* handle);
+
+    void _cut(FNode<V, K>* handle);
+
+    void _link(FNode<V, K>* a, FNode<V, K>* b);
+
+    void _cascadingCut(FNode<V, K>* handle);
+
+    void _unionByRank();
+
+    void _insertByRank(std::vector<FNode<V, K>*>& ranks, FNode<V, K>* handle);
+
+    void _deleteMin();
+
+    void _decreaseKey(FNode<V, K>* handle, K key);
+
+    void _insertForest(FNode<V, K>* other);
 };

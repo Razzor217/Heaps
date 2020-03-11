@@ -82,8 +82,10 @@ public:
         }
     }
 
-    void build(std::vector<V, K>& elements, std::vector<K>& keys) override
+    void build(std::vector<V>& elements, std::vector<K>& keys) override
     {
+        assert(elements.size() == keys.size());
+
         for (int i = 0; i < elements.size(); ++i)
         {
             insert(elements[i], keys[i]);
