@@ -5,6 +5,13 @@
 #include <vector>
 
 /**
+ * @mainpage Heap Data Structures
+ *
+ * The API documentation of this implentation of heap data structures includes 
+ * explanations and asymptotic behaviour of runtime (and or space requirements).
+ */
+
+/**
  * @brief Template interface for heap data structures.
  *
  * Any extension of this interface is required to provide implementations of 
