@@ -4,37 +4,78 @@
 
 template<class V, class K> class PairingHeap;
 
+/**
+ * @brief Template for nodes of a pairing heap.
+ *
+ * Pairing heap nodes maintain pointers to their parent node, left and right 
+ * sibling as well as one child node. 
+ * 
+ * They are associated with a key of type `K` and store some value of type `V`.
+ * 
+ * @tparam V Template parameter for value types
+ * @tparam K Template parameter for key types
+ */
 template<class V, class K> 
 struct Node : public INode<V, K> 
 {
 public:
     friend class PairingHeap<V, K>;
 
+    /**
+     * @brief Get the parent node.
+     * 
+     * @return A pointer to the parent node
+     */
     Node<V, K>* getParent() 
     { 
         return parent; 
     }
 
+    /**
+     * @brief Gets the left sibling node.
+     * 
+     * @return A pointer to the left sibling node
+     */
     Node<V, K>* getLeft() 
     { 
         return left; 
     }
 
+    /**
+     * @brief Gets the right sibling node.
+     * 
+     * @return A pointer to the right sibling node
+     */
     Node<V, K>* getRight() 
     { 
         return right; 
     }
 
+    /**
+     * @brief Gets one child node.
+     * 
+     * @return A pointer to one child node
+     */
     Node<V, K>* getChild() 
     { 
         return child; 
     }
 
+    /**
+     * @brief Gets the value of the heap node.
+     * 
+     * @return The value stored in the heap node
+     */
     V getValue() 
     { 
         return value; 
     }
 
+    /**
+     * @brief Gets the key associated with the heap node.
+     * 
+     * @return The key associated with the heap node
+     */
     K getKey()
     {
         return key;
@@ -60,6 +101,18 @@ private:
     K key;
 };
 
+/**
+ * @brief Template for pairing heap data structures.
+ *
+ * Pairing heaps generalize standard heap implementations such as binary heaps 
+ * by extending a single tree to a forest of trees. 
+ * 
+ * This allows for insertions and merging in constant time as well as 
+ * deletions in logarithmic time.
+ * 
+ * @tparam V Template parameter for value types
+ * @tparam K Template parameter for key types
+ */
 template<class V, class K> 
 class PairingHeap : public IHeap<V, K>
 {
