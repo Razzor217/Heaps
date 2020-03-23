@@ -114,6 +114,11 @@ public:
     INode<V, K>* insert(V element, K key) override
     {
         FNode<V, K>* handle = _singleton(element);
+        _newTree(node);
+
+        ++count;
+
+        return node;
     }
 
     V min() override
