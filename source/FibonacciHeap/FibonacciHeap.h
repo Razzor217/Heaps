@@ -223,11 +223,11 @@ public:
     INode<V, K>* insert(V element, K key) override
     {
         FNode<V, K>* handle = _singleton(element);
-        _newTree(node);
+        _newTree(handle);
 
         ++count;
 
-        return node;
+        return handle;
     }
 
     /**
