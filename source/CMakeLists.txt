@@ -4,7 +4,7 @@ set(SOURCES
 
 set(HEADERS
     ./interface/IHeap.h
-    ./Interface/INode.h
+    ./interface/INode.h
 
     ./FibonacciHeap/FibonacciHeap.h
     ./FibonacciHeap/FibonacciHeap.hpp
