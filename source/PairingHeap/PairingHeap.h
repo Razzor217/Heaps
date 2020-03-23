@@ -122,11 +122,21 @@ private:
     int count;
 
 public:
+    /**
+     * @brief Constructs a new pairing heap.
+     * 
+     */
     PairingHeap()
     {
         _init();
     }
 
+    /**
+     * @brief Destroys the pairing heap.
+     *
+     * Recursively deletes all nodes of all trees maintained by the heap.
+     * 
+     */
     virtual ~PairingHeap()
     {
         if (forest)
@@ -135,6 +145,21 @@ public:
         }
     }
 
+    /**
+     * @brief Builds a pairing heap from a set of values with associated keys.
+     *
+     * Both sets must have the same length. This implementation assumes that 
+     * the following property holds for all indices `i`:
+     *
+     * `key[i]` is the key associated with `elements[i]`.
+     *
+     * This implementation inserts every key-value-pair separately. 
+     * 
+     * Runtime: \f$ O(\log n)\f$
+     * 
+     * @param elements 
+     * @param keys 
+     */
     void build(std::vector<V>& elements, std::vector<K>& keys) override
     {
         assert(elements.size() == keys.size());
@@ -145,11 +170,30 @@ public:
         }
     }
 
+    /**
+     * @brief Determines the current size of the pairing heap.
+     * 
+     * Runtime: \f$ O(1) \f$
+     * 
+     * @return The current size of the heap
+     */
     int size() override
     {
         return count;
     }
 
+    /**
+     * @brief Inserts a key-value-pair into the pairing heap.
+     *
+     * This implementation inserts a key-value-pair by inserting a new node 
+     * as a new tree into the forest.
+     * 
+     * Runtime: \f$ O(1) \f$
+     * 
+     * @param element Value to insert
+     * @param key Key associated with `value`
+     * @return A pointer to the resulting pairing heap node
+     */
     INode<V, K>* insert(V element, K key) override
     {
         Node<V, K>* node = _singleton(element, key);
@@ -160,11 +204,25 @@ public:
         return node;
     }
 
+    /**
+     * @brief Determines the value of the node with the smallest key.
+     * 
+     * Runtime: \f$ O(1) \f$
+     * 
+     * @return Value of the smallest element
+     */
     V min() override
     {
         return minPtr->getValue();
     }
 
+    /**
+     * @brief Deletes the heap node with smallest key and returns its value.
+     * 
+     * Runtime: \f$ O(\log n) \f$ amortized
+     *
+     * @return The value of the smallest element
+     */
     V deleteMin() override
     {
         V value = minPtr->getValue();
@@ -176,6 +234,18 @@ public:
         return value;
     }
 
+    /**
+     * @brief Removes a given node from the pairing heap.
+     *
+     * The key associated with the node is first decreased such that the new key
+     * is smaller than any other key. Afterwards, the element with smallest key,
+     * i.e. the given node, is deleted.
+     * 
+     * Runtime: \f$ O(\log n) \f$ amortized
+     * 
+     * @param handle Pointer to the node to remove
+     * @return Value of the deleted node
+     */
     V remove(INode<V, K>* handle) override
     {
         decreaseKey(handle, minPtr->getKey() - 1);
@@ -183,6 +253,14 @@ public:
         deleteMin();
     }
 
+    /**
+     * @brief Decreases the key of a given heap node.
+     * 
+     * Runtime: \f$ O(\log \log n) \leq T \leq O(\log n) \f$
+     *
+     * @param handle Pointer to the heap node 
+     * @param key New key value of the heap node
+     */
     void decreaseKey(INode<V, K>* handle, K key) override
     {
         if (key < handle->getKey())
@@ -191,6 +269,15 @@ public:
         }
     }
 
+    /**
+     * @brief Merges two instances of pairing heaps.
+     * 
+     * The new forest becomes the union of both forests.
+     *
+     * Runtime: \f$ O(1) \f$
+     *
+     * @param other Pointer to the pairing heap to merge with
+     */
     void merge(PairingHeap<V, K>* other) override
     {
         if (other->getMinPtr()->getKey() < minPtr->getKey())
@@ -202,11 +289,21 @@ public:
         other->getForest() = NULL;
     }
 
+    /**
+     * @brief Gets the forest of trees.
+     * 
+     * @return A pointer to the first tree in the forest.
+     */
     Node<V, K>* getForest()
     {
         return forest;
     }
 
+    /**
+     * @brief Gets the node with the smallest key.
+     * 
+     * @return A pointer to the smallest element
+     */
     Node<V, K>* getMinPtr()
     {
         return minPtr;

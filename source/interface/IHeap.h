@@ -24,7 +24,7 @@ template<class V, class K> class IHeap
 {
 public:
     /**
-     * @brief Builds a heap data structure from a set of elements with associated keys.
+     * @brief Builds a heap data structure from a set of values with associated keys.
      *
      * Usually implemented as a series of insertions.
      * 
