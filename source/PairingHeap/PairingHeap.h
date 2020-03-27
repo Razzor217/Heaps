@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../interface/IHeap.h"
+#include <interface/IHeap.h>
 
 template<class V, class K> class PairingHeap;
 
@@ -331,4 +331,4 @@ private:
     void _insertForest(Node<V, K>* other);
 };
 
-#include "PairingHeap.hpp"
+#include <PairingHeap/PairingHeap.hpp>

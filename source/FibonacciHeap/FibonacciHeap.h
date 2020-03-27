@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../interface/IHeap.h"
+#include <interface/IHeap.h>
 
 template<class V, class K> class FibonacciHeap;
 
@@ -361,4 +361,4 @@ private:
     void _insertForest(FNode<V, K>* other);
 };
 
-#include "FibonacciHeap.hpp"
+#include <FibonacciHeap/FibonacciHeap.hpp>
