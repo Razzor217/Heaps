@@ -1,15 +1,17 @@
-set(SOURCES 
-    ./main.cpp
-)
-
 set(HEADERS
-    ./interface/IHeap.h
-    ./interface/INode.h
+    interface/IHeap.h
+    interface/INode.h
 
-    ./FibonacciHeap/FibonacciHeap.h
-    ./FibonacciHeap/FibonacciHeap.hpp
-    ./PairingHeap/PairingHeap.h
-    ./PairingHeap/PairingHeap.hpp
+    FibonacciHeap/FibonacciHeap.h
+    FibonacciHeap/FibonacciHeap.hpp
+    PairingHeap/PairingHeap.h
+    PairingHeap/PairingHeap.hpp
 )
 
-add_executable(heaps ${HEADERS} ${SOURCES})
+add_library(HeapLibs ${HEADERS})
+
+set_target_properties(HeapLibs PROPERTIES LINKER_LANGUAGE CXX)
+
+add_executable(heaps main.cpp)
+
+target_link_libraries(heaps HeapLibs)

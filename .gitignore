@@ -10,5 +10,6 @@
 # ignore build directory
 build
 
-# ignore DS_Store
+# ignore specific aux files
 *.DS_Store
+*.vscode
