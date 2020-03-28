@@ -1,9 +1,6 @@
 include_directories(${Heaps_SOURCE_DIR}/source)
 
 set(HEADERS
-    interface/IHeap.h
-    interface/INode.h
-
     FibonacciHeap/FibonacciHeap.h
     FibonacciHeap/FibonacciHeap.hpp
     PairingHeap/PairingHeap.h

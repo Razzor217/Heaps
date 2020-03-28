@@ -1,6 +1,7 @@
 #pragma once
 
-#include <interface/IHeap.h>
+#include <cassert>
+#include <vector>
 
 template<class V, class K> class PairingHeap;
 
@@ -16,7 +17,7 @@ template<class V, class K> class PairingHeap;
  * @tparam K Template parameter for key types
  */
 template<class V, class K> 
-struct Node : public INode<V, K> 
+struct Node
 {
 public:
     friend class PairingHeap<V, K>;
@@ -81,12 +82,12 @@ public:
         return key;
     }
 
-    bool hasChildren() override 
+    bool hasChildren() 
     { 
         return child; 
     }
 
-    bool hasParents() override 
+    bool hasParent() 
     { 
         return parent; 
     }
@@ -114,7 +115,7 @@ private:
  * @tparam K Template parameter for key types
  */
 template<class V, class K> 
-class PairingHeap : public IHeap<V, K>
+class PairingHeap
 {
 private:
     Node<V, K>* forest;
@@ -160,7 +161,7 @@ public:
      * @param elements 
      * @param keys 
      */
-    void build(std::vector<V>& elements, std::vector<K>& keys) override
+    void build(std::vector<V>& elements, std::vector<K>& keys)
     {
         assert(elements.size() == keys.size());
 
@@ -177,7 +178,7 @@ public:
      * 
      * @return The current size of the heap
      */
-    int size() override
+    int size()
     {
         return count;
     }
@@ -194,7 +195,7 @@ public:
      * @param key Key associated with `value`
      * @return A pointer to the resulting pairing heap node
      */
-    INode<V, K>* insert(V element, K key) override
+    Node<V, K>* insert(V element, K key)
     {
         Node<V, K>* node = _singleton(element, key);
         _newTree(node);
@@ -211,7 +212,7 @@ public:
      * 
      * @return Value of the smallest element
      */
-    V min() override
+    V min()
     {
         return minPtr->getValue();
     }
@@ -223,7 +224,7 @@ public:
      *
      * @return The value of the smallest element
      */
-    V deleteMin() override
+    V deleteMin()
     {
         V value = minPtr->getValue();
 
@@ -246,7 +247,7 @@ public:
      * @param handle Pointer to the node to remove
      * @return Value of the deleted node
      */
-    V remove(INode<V, K>* handle) override
+    V remove(Node<V, K>* handle)
     {
         decreaseKey(handle, minPtr->getKey() - 1);
 
@@ -261,7 +262,7 @@ public:
      * @param handle Pointer to the heap node 
      * @param key New key value of the heap node
      */
-    void decreaseKey(INode<V, K>* handle, K key) override
+    void decreaseKey(Node<V, K>* handle, K key)
     {
         if (key < handle->getKey())
         {
@@ -278,7 +279,7 @@ public:
      *
      * @param other Pointer to the pairing heap to merge with
      */
-    void merge(PairingHeap<V, K>* other) override
+    void merge(PairingHeap<V, K>* other)
     {
         if (other->getMinPtr()->getKey() < minPtr->getKey())
         {

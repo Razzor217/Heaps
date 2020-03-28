@@ -5,5 +5,11 @@
 
 BOOST_AUTO_TEST_CASE(constructorTest)
 {
-    BOOST_CHECK_EQUAL(true, true);
+    FibonacciHeap<int, int> heap;
+
+    // assert heap is empty
+
+    BOOST_CHECK(!heap.getForest());
+    BOOST_CHECK(!heap.getMinPtr());
+    BOOST_CHECK_EQUAL(heap.size(), 0);
 }

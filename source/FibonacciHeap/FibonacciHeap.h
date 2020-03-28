@@ -1,6 +1,7 @@
 #pragma once
 
-#include <interface/IHeap.h>
+#include <cassert>
+#include <vector>
 
 template<class V, class K> class FibonacciHeap;
 
@@ -17,7 +18,7 @@ template<class V, class K> class FibonacciHeap;
  * @tparam K Template parameter for key types
  */
 template<class V, class K> 
-struct FNode : public INode<V, K> 
+struct FNode 
 {
 public:
     friend class FibonacciHeap<V, K>;
@@ -102,12 +103,12 @@ public:
         return marked; 
     }
 
-    bool hasChildren() override 
+    bool hasChildren()
     { 
         return child; 
     }
 
-    bool hasParents() override 
+    bool hasParent() 
     { 
         return parent; 
     }
@@ -138,7 +139,7 @@ private:
  * @tparam K Template parameter for key types
  */
 template<class V, class K> 
-class FibonacciHeap : public IHeap<V, K>
+class FibonacciHeap
 {
 private:
     FNode<V, K>* forest;
@@ -184,7 +185,7 @@ public:
      * @param elements 
      * @param keys 
      */
-    void build(std::vector<V>& elements, std::vector<K>& keys) override
+    void build(std::vector<V>& elements, std::vector<K>& keys)
     {
         assert(elements.size() == keys.size());
 
@@ -203,7 +204,7 @@ public:
      * 
      * @return The current size of the heap
      */
-    int size() override
+    int size()
     {
         return count;
     }
@@ -220,7 +221,7 @@ public:
      * @param key Key associated with `value`
      * @return A pointer to the resulting pairing heap node
      */
-    INode<V, K>* insert(V element, K key) override
+    FNode<V, K>* insert(V element, K key)
     {
         FNode<V, K>* handle = _singleton(element);
         _newTree(handle);
@@ -237,7 +238,7 @@ public:
      * 
      * @return Value of the smallest element
      */
-    V min() override
+    V min()
     {
         return minPtr->getValue();
     }
@@ -249,7 +250,7 @@ public:
      *
      * @return The value of the smallest element
      */
-    V deleteMin() override
+    V deleteMin()
     {
         V value = minPtr->getValue();
 
@@ -272,7 +273,7 @@ public:
      * @param handle Pointer to the node to remove
      * @return Value of the deleted node
      */
-    V remove(INode<V, K>* handle) override
+    V remove(FNode<V, K>* handle)
     {
         decreaseKey(handle, minPtr->getKey() - 1);
 
@@ -287,7 +288,7 @@ public:
      * @param handle Pointer to the heap node 
      * @param key New key value of the heap node
      */
-    void decreaseKey(INode<V, K>* handle, V key) override
+    void decreaseKey(FNode<V, K>* handle, V key)
     {
         if (key < handle->getKey())
         {
@@ -304,7 +305,7 @@ public:
      *
      * @param other Pointer to the fibonacci heap to merge with
      */
-    void merge(IHeap<V, K>* other) override
+    void merge(FibonacciHeap<V, K>* other)
     {
         if (other->getMinPtr()->getKey() < minPtr->getKey())
         {
