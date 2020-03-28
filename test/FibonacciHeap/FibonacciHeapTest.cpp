@@ -38,6 +38,8 @@ BOOST_AUTO_TEST_CASE(insertTest1)
 
     BOOST_CHECK_EQUAL(heap.getMinPtr()->getValue(), 5);
     BOOST_CHECK_EQUAL(heap.getMinPtr()->getKey(), 5);
+
+    BOOST_CHECK_EQUAL(heap.min(), 5);
 }
 
 BOOST_AUTO_TEST_CASE(insertTest2)
@@ -58,8 +60,7 @@ BOOST_AUTO_TEST_CASE(insertTest2)
         BOOST_CHECK_EQUAL(heap.size(), i + 1);
     }
 
-    BOOST_CHECK_EQUAL(heap.getMinPtr()->getValue(), -3);
-    BOOST_CHECK_EQUAL(heap.getMinPtr()->getKey(), -3);
+    BOOST_CHECK_EQUAL(heap.min(), -3);
 }
 
 BOOST_AUTO_TEST_CASE(buildTest1)
@@ -77,6 +78,21 @@ BOOST_AUTO_TEST_CASE(buildTest1)
 
     BOOST_CHECK_EQUAL(heap.size(), elements.size());
 
-    BOOST_CHECK_EQUAL(heap.getMinPtr()->getValue(), -3);
-    BOOST_CHECK_EQUAL(heap.getMinPtr()->getKey(), -3);
+    BOOST_CHECK_EQUAL(heap.min(), -3);
+}
+
+BOOST_AUTO_TEST_CASE(deleteMinTest1)
+{
+    FibonacciHeap<int, int> heap;
+
+    // insert element
+
+    heap.insert(5, 5);
+
+    // deleteMin
+
+    auto result = heap.deleteMin();
+
+    BOOST_CHECK_EQUAL(result, 5);
+    BOOST_CHECK_EQUAL(heap.size(), 0);
 }

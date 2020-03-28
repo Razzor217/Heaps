@@ -159,19 +159,40 @@ void PairingHeap<V, K>::_deleteMin()
         while (current != handle->child);
     }
 
+    // advance pointer to first root
+    if (handle == forest)
+    {
+        forest = handle->right;
+    }
+
     delete handle;
 
-    // perform pair-wise union operations on roots
-    auto current = forest->right;
-    do
+    if (forest)
     {
-        auto node = current;
-        current = current->right->right;
+        // perform pair-wise union operations on roots
+        auto current = forest;
+        do
+        {
+            auto node = current;
 
-        _union(node, node->right);
+            // advance current by two roots
+            current = current->right->right;
+
+            _union(node, node->right);
+        }
+        while (current != forest && current != forest->right);
+    
+        // update min pointer
+        current = forest;
+        minPtr = forest;
+        do
+        {
+            if (current->key < minPtr->key)
+            {
+                minPtr = current;
+            }
+        } while (current != forest);
     }
-    while (current != forest && current != forest->right);
-
 }
 
 template<class V, class K>

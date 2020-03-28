@@ -250,12 +250,14 @@ public:
      */
     V deleteMin()
     {
+        assert(size());
+        
         V value = minPtr->getValue();
 
         _deleteMin();
 
-        count = (count > 0) ? count-- : 0;
-
+        count--;
+        
         return value;
     }
 

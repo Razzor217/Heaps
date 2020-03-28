@@ -147,7 +147,7 @@ void FibonacciHeap<V, K>::_cascadingCut(FNode<V, K>* handle)
 template<class V, class K>
 void FibonacciHeap<V, K>::_unionByRank()
 {
-    std::vector<FNode<V, K>> ranks(count, NULL);
+    std::vector<FNode<V, K>*> ranks(count, NULL);
 
     FNode<V, K>* it = forest;
     do
@@ -172,12 +172,12 @@ void FibonacciHeap<V, K>::_insertByRank(
         if (handle->key < collision->key)
         {
             _link(handle, collision);
-            _insertByRank(handle);
+            _insertByRank(ranks, handle);
         }
         else
         {
             _link(collision, handle);
-            _insertByRank(collision);
+            _insertByRank(ranks, collision);
         }
     }
     else
@@ -224,7 +224,28 @@ void FibonacciHeap<V, K>::_deleteMin()
         while (current != handle->child);
     }
 
-    _unionByRank();
+    if (handle == forest)
+    {
+        forest = handle->right;
+    }
+
+    delete handle;
+
+    if (forest)
+    {
+        _unionByRank();
+
+        // update min pointer
+        auto current = forest;
+        minPtr = forest;
+        do
+        {
+            if (current->key < minPtr->key)
+            {
+                minPtr = current;
+            }
+        } while (current != forest);
+    }
 }
 
 template<class V, class K>
