@@ -13,3 +13,4 @@ build
 # ignore specific aux files
 *.DS_Store
 *.vscode
+CMakeLists.txt.user

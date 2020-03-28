@@ -93,6 +93,48 @@ BOOST_AUTO_TEST_CASE(deleteMinTest1)
 
     auto result = heap.deleteMin();
 
+    // check result and size
+
     BOOST_CHECK_EQUAL(result, 5);
     BOOST_CHECK_EQUAL(heap.size(), 0);
+}
+
+BOOST_AUTO_TEST_CASE(deleteMinTest2)
+{
+    FibonacciHeap<int, int> heap;
+
+    // insert two elements
+
+    heap.insert(5, 5);
+    heap.insert(3, 3);
+
+    // deleteMin
+
+    auto result = heap.deleteMin();
+
+    // check result, size, min pointer
+
+    BOOST_CHECK_EQUAL(result, 3);
+    BOOST_CHECK_EQUAL(heap.size(), 1);
+    BOOST_CHECK_EQUAL(heap.min(), 5);
+}
+
+BOOST_AUTO_TEST_CASE(deleteMinTest3)
+{
+    FibonacciHeap<int, int> heap;
+
+    // insert two elements
+
+    heap.insert(3, 3);
+    heap.insert(5, 5);
+
+    // deleteMin
+
+    auto result = heap.deleteMin();
+
+    // check result, size, min pointer
+
+    BOOST_CHECK_EQUAL(result, 3);
+    BOOST_CHECK_EQUAL(heap.size(), 1);
+    BOOST_CHECK_EQUAL(heap.min(), 5);
 }

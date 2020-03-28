@@ -227,7 +227,7 @@ public:
     V deleteMin()
     {
         assert(size());
-        
+
         V value = minPtr->getValue();
 
         _deleteMin();
@@ -326,7 +326,11 @@ private:
 
     void _link(Node<V, K>* a, Node<V, K>* b);
 
-    void _union(Node<V, K>* a, Node<V, K>* b);
+    Node<V, K>* _union(Node<V, K>* a, Node<V, K>* b);
+
+    void _pairWiseUnion();
+
+    void _updateMinPtr();
 
     void _deleteMin();
 

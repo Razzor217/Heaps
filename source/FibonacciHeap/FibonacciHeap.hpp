@@ -91,7 +91,12 @@ void FibonacciHeap<V, K>::_link(FNode<V, K>* a, FNode<V, K>* b)
     b->left->right = b->right;
     b->right->left = b->left;
 
-    if (a->hasChildren())
+    if (forest == b)
+    {
+        forest = a;
+    }
+
+    if (a->child)
     {
         // insert b as child at end of children
         auto end = a->child->left;
@@ -147,14 +152,17 @@ void FibonacciHeap<V, K>::_cascadingCut(FNode<V, K>* handle)
 template<class V, class K>
 void FibonacciHeap<V, K>::_unionByRank()
 {
-    std::vector<FNode<V, K>*> ranks(count, NULL);
-
-    FNode<V, K>* it = forest;
-    do
+    if (forest)
     {
-        _insertByRank(ranks, it);
+        std::vector<FNode<V, K>*> ranks(count, NULL);
+
+        FNode<V, K>* it = forest;
+        do
+        {
+            _insertByRank(ranks, it);
+        }
+        while (it != forest);
     }
-    while (it != forest);
 }
 
 template<class V, class K>
@@ -184,6 +192,27 @@ void FibonacciHeap<V, K>::_insertByRank(
     {
          ranks[handle->rank] = handle;
     }
+}
+
+template<class V, class K>
+void FibonacciHeap<V, K>::_updateMinPtr()
+{
+    if (forest)
+    {
+        // update min pointer
+        auto current = forest->right;
+        minPtr = forest;
+        while (current != forest)
+        {
+            if (current->key < minPtr->key)
+            {
+                minPtr = current;
+            }
+
+            current = current->right;
+        }
+    }
+    
 }
 
 template<class V, class K>
@@ -231,21 +260,9 @@ void FibonacciHeap<V, K>::_deleteMin()
 
     delete handle;
 
-    if (forest)
-    {
-        _unionByRank();
+    _unionByRank();
 
-        // update min pointer
-        auto current = forest;
-        minPtr = forest;
-        do
-        {
-            if (current->key < minPtr->key)
-            {
-                minPtr = current;
-            }
-        } while (current != forest);
-    }
+    _updateMinPtr();
 }
 
 template<class V, class K>

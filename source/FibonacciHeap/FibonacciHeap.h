@@ -355,6 +355,8 @@ private:
 
     void _insertByRank(std::vector<FNode<V, K>*>& ranks, FNode<V, K>* handle);
 
+    void _updateMinPtr();
+
     void _deleteMin();
 
     void _decreaseKey(FNode<V, K>* handle, K key);
