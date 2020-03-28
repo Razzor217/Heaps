@@ -42,13 +42,20 @@ Node<V, K>* PairingHeap<V, K>::_singleton(V element, K key)
 template<class V, class K>
 void PairingHeap<V, K>::_newTree(Node<V, K>* handle)
 {
-    Node<V, K>* end = forest->left;
-    forest->left = handle;
-    handle->left = end;
-    handle->right = forest;
-    end->right = handle;
+    if (!forest)
+    {
+        forest = handle;
+    }
+    else
+    {
+        Node<V, K>* end = forest->left;
+        forest->left = handle;
+        handle->left = end;
+        handle->right = forest;
+        end->right = handle;
+    }
 
-    if (handle->key < minPtr->key)
+    if (!minPtr || handle->key < minPtr->key)
     {
         minPtr = handle;
     }

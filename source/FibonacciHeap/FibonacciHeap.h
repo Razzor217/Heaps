@@ -193,8 +193,6 @@ public:
         {
             insert(elements[i], keys[i]);
         }
-
-        ++count;
     }
 
     /**
@@ -223,7 +221,7 @@ public:
      */
     FNode<V, K>* insert(V element, K key)
     {
-        FNode<V, K>* handle = _singleton(element);
+        FNode<V, K>* handle = _singleton(element, key);
         _newTree(handle);
 
         ++count;

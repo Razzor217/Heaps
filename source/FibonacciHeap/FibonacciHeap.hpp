@@ -45,13 +45,20 @@ FNode<V, K>* FibonacciHeap<V, K>::_singleton(V element, K key)
 template<class V, class K>
 void FibonacciHeap<V, K>::_newTree(FNode<V, K>* handle)
 {
-    FNode<V, K>* end = forest->left;
-    forest->left = handle;
-    handle->left = end;
-    handle->right = forest;
-    end->right = handle;
-
-    if (handle->key < minPtr->key)
+    if (!forest)
+    {
+        forest = handle;
+    }
+    else
+    {
+        FNode<V, K>* end = forest->left;
+        forest->left = handle;
+        handle->left = end;
+        handle->right = forest;
+        end->right = handle;
+    }
+    
+    if (!minPtr || handle->key < minPtr->key)
     {
         minPtr = handle;
     }
