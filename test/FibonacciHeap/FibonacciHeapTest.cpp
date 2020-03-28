@@ -1,5 +1,8 @@
 #include <FibonacciHeap/FibonacciHeap.h>
 
+#include <algorithm>
+#include <random>
+
 #define BOOST_TEST_MODULE fibonacci_heap test
 #include <boost/test/unit_test.hpp>
 
@@ -137,4 +140,75 @@ BOOST_AUTO_TEST_CASE(deleteMinTest3)
     BOOST_CHECK_EQUAL(result, 3);
     BOOST_CHECK_EQUAL(heap.size(), 1);
     BOOST_CHECK_EQUAL(heap.min(), 5);
+}
+
+BOOST_AUTO_TEST_CASE(sortTest1)
+{
+    FibonacciHeap<int, int> heap;
+
+    int n = 100;
+
+    std::vector<int> elements(n);
+    for (int i = 0; i < n; ++i)
+    {
+        elements[i] = n - i;
+    }
+
+    // build heap from elements
+
+    heap.build(elements, elements);
+
+    // check size and min
+
+    BOOST_CHECK_EQUAL(heap.size(), elements.size());
+    BOOST_CHECK_EQUAL(heap.min(), 1);
+
+    // delete min to obtain sorted vector
+
+    std::vector<int> result;
+    for (int i = 0; i < n; ++i)
+    {
+        result.push_back(heap.deleteMin());
+    }
+
+    // check size, check whether result is sorted
+
+    BOOST_CHECK_EQUAL(heap.size(), 0);
+    BOOST_CHECK(std::is_sorted(result.begin(), result.end()));
+}
+
+BOOST_AUTO_TEST_CASE(sortTest2)
+{
+    FibonacciHeap<int, int> heap;
+
+    int n = 100;
+
+    std::vector<int> elements(n);
+    
+    // pseudo random number generator
+    std::random_device seed;
+    std::mt19937 rng(seed());
+    std::uniform_int_distribution<> dist(-n, n);
+
+    for (int i = 0; i < n; ++i)
+    {
+        elements[i] = dist(rng);
+    }
+
+    // build heap from random elements
+
+    heap.build(elements, elements);
+
+    // delete min to obtain sorted vector
+
+    std::vector<int> result;
+    for (int i = 0; i < n; ++i)
+    {
+        result.push_back(heap.deleteMin());
+    }
+
+    // check size, check whether result is sorted
+
+    BOOST_CHECK_EQUAL(heap.size(), 0);
+    BOOST_CHECK(std::is_sorted(result.begin(), result.end()));
 }
