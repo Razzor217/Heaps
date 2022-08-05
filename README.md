@@ -27,3 +27,8 @@ The API documentation is provided with DoxyGen and can be built with
 
 from within the `build` directory. To view the documentation, simply open 
 `<heaps directory>/build/doc/index.html` in your preferred browser.
+
+## Planned features
+
+* Correctness tests
+* Benchmarks and implementation variants
